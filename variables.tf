@@ -7,16 +7,17 @@ variable "aws_region" {
 
 variable "ami_id" {
     description = "aws ami ID"
-    default     = "ami-0d21d42bea8de8b55"
+    #default     = "ami-0d21d42bea8de8b55"
+    default     ="ami-06bb074d1e196d0d4"
 }
 
 variable "vpc_ip" {
     description = "VNET address prefix"
-    default     = "192.168.0/24"
+    default     = "172.16.0.0/16"
 }
 
 
-variable "aws_clienid" {
+variable "aws_clientid" {
     description = "access key ID."
     default     = ""
 }

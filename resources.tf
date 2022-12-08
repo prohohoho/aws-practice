@@ -63,7 +63,8 @@ resource "aws_instance" "aws-ec2-test" {
   sudo apt update
   sudo apt install -y docker-ce
   docker run -d -p 80:80 --name=ngjohnx --health-cmd ='curl --fail http://localhost || exit 1' --health-interval=10s --health-start-period=3m nginx:1.14 
-
+  sudo apt update
+  sudo apt install -y moreutils
   EOL
 
    depends_on     = [aws_security_group.aws-sg-test]

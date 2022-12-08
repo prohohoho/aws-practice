@@ -63,9 +63,7 @@ resource "aws_instance" "aws-ec2-test" {
   echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable" | sudo tee /etc/apt/sources.list.d/docker.list
   sudo apt update
   sudo apt install -y docker-ce
-  docker run --name mynginx1 -p 80:80 -d nginx  
-  sudo docker stats --no-stream mynginx1 >> test.log
-
+  docker run -d -p 81:80 --name=healthy --health-cmd='stat /usr/share/nginx/html/index.html || exit 1' --health-interval=30s --health-start-period=3m nginx:1.14
 
   EOL
 

@@ -25,13 +25,11 @@ resource "aws_subnet" "aws-subnet-test" {
 resource "aws_security_group" "aws-sg-test" {
   name = "ssh allow my local ip"
   vpc_id = "${aws_vpc.aws-test-vpc.id}"
-  ingress {
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
+  ingress {        
     from_port = 22
     to_port = 22
     protocol = "tcp"
+    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
   }
   // Terraform removes the default rule
   egress {

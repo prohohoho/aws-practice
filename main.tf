@@ -4,7 +4,7 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.0"
     }
-  }
+  }   
 }
 
 # Configure the AWS Provider

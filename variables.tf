@@ -7,13 +7,13 @@ variable "aws_region" {
 
 variable "ami_id" {
     description = "aws ami ID"
-    #default     = "ami-0d21d42bea8de8b55"
-    default     ="ami-06bb074d1e196d0d4"
+    default     = "ami-0df609f69029c9bdb"
+    #default     ="ami-06bb074d1e196d0d4"
 }
 
 variable "vpc_ip" {
     description = "VNET address prefix"
-    default     = "172.16.0.0/16"
+    default     = "192.168.0.0/16"
 }
 
 
@@ -30,4 +30,10 @@ variable "aws_secret" {
 variable "instance_type" {
     description = "instance type for ec2"
     default     = "t2.micro"
+}
+
+variable "dd_values_path" {
+  description = "The filepath for the datadog values file"
+  #number of dots state how many folders back to check
+  default ="./TfState/tform.tfstate"
 }

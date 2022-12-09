@@ -3,6 +3,11 @@ data "http" "myip" {
   url = "http://ipv4.icanhazip.com"
 }
 
+#shellscript
+data "template_file" "startupscript"{
+  template = file ("script.sh")
+}
+
 //create vpc
 resource "aws_vpc" "aws-test-vpc" {
   cidr_block = "10.0.0.0/16"
@@ -47,32 +52,13 @@ resource "aws_instance" "aws-ec2-test" {
   instance_type = "t2.micro"
   key_name = "aws-practice-kp"
   security_groups = ["${aws_security_group.aws-sg-test.id}"]
+  user_data = data.template_file.startupscript.rendered
+  
   tags= {
     Name = "aws-test"
   }
   subnet_id = "${aws_subnet.aws-subnet-test.id}"
-  
-  user_data = <<-EOL
-  #!/bin/bash -xe
-  sudo ufw enable
-  
-  sudo ufw allow 22/tcp
-  sudo ufw allow ssh
-  sudo apt update
-  sudo apt install -y apt-transport-https
-  wget -qO - https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable" | sudo tee /etc/apt/sources.list.d/docker.list
-  sudo apt update
-  sudo apt install -y docker-ce
-  docker run -d -p 80:80 --name=ngjohnx --health-cmd ='curl --fail http://localhost || exit 1' --health-interval=10s --health-start-period=3m nginx:1.14 
-  sudo apt update
-  sudo apt install -y moreutils  
-
-  EOL
-
-  
-
-   depends_on     = [aws_security_group.aws-sg-test]
+  depends_on     = [aws_security_group.aws-sg-test]
 }
 
 

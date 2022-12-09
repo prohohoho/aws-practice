@@ -55,7 +55,9 @@ resource "aws_instance" "aws-ec2-test" {
   user_data = <<-EOL
   #!/bin/bash -xe
   sudo ufw enable
-  sudo ufw allow from 203.173.222.36 to any port 22
+  
+  sudo ufw allow 22/tcp
+  sudo ufw allow ssh
   sudo apt update
   sudo apt install -y apt-transport-https
   wget -qO - https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -64,8 +66,11 @@ resource "aws_instance" "aws-ec2-test" {
   sudo apt install -y docker-ce
   docker run -d -p 80:80 --name=ngjohnx --health-cmd ='curl --fail http://localhost || exit 1' --health-interval=10s --health-start-period=3m nginx:1.14 
   sudo apt update
-  sudo apt install -y moreutils
+  sudo apt install -y moreutils  
+
   EOL
+
+  
 
    depends_on     = [aws_security_group.aws-sg-test]
 }
@@ -102,3 +107,22 @@ resource "aws_route_table_association" "subnet-association" {
   subnet_id      = "${aws_subnet.aws-subnet-test.id}"
   route_table_id = "${aws_route_table.route-table-aws-test-vpc.id}"
 }
+
+
+#resource "null_resource" "runscript_to_ec2" {
+#  connection {
+#    type        = "ssh"
+#    host        = "${aws_eip.ip-aws-test-vpc.public_ip}"
+#    user        = "ubuntu"
+#    private_key = file("aws-practice-kp.pem")
+#    #private_key = file("~/kluu.pem") aws-practice-kp
+#  }  
+#   provisioner "remote-exec" {
+#    inline = [
+#      "while true; do sleep 10; sudo docker ps -s | ts '[%Y-%m-%d %H:%M:%S]' >> /home/ubuntu/resource.log; done </dev/null &>/dev/null &",
+#      "while true; do sleep 10; sudo docker stats --no-stream | ts '[%Y-%m-%d %H:%M:%S]' >> /home/ubuntu/resource.log; done </dev/null &>/dev/null &",      
+#    ]
+#  }
+# depends_on     = [aws_eip.ip-aws-test-vpc]
+#
+#}

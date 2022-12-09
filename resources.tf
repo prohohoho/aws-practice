@@ -51,6 +51,7 @@ resource "aws_security_group" "aws-sg-test" {
    protocol = "-1"
    cidr_blocks = ["0.0.0.0/0"]
  }
+ depends_on     = [aws_vpc.aws-test-vpc]
  }
 
 
@@ -70,22 +71,23 @@ resource "aws_instance" "aws-ec2-test" {
 }
 
 
-
+#create elasit IP
 resource "aws_eip" "ip-aws-test-vpc" {
   instance = "${aws_instance.aws-ec2-test.id}"
   vpc      = true
   depends_on     = [aws_instance.aws-ec2-test]
 }
 
-//gateways.tf
+#create gateway
 resource "aws_internet_gateway" "aws-test-vpc-gw" {
   vpc_id = "${aws_vpc.aws-test-vpc.id}"
   tags={
     Name = "aws-test-vpc-gw"
   }
+  depends_on     = [aws_vpc.aws-test-vpc]
 }
 
-//subnets.tf
+#create route table
 resource "aws_route_table" "route-table-aws-test-vpc" {
   vpc_id = "${aws_vpc.aws-test-vpc.id}"
   route {
@@ -95,28 +97,12 @@ resource "aws_route_table" "route-table-aws-test-vpc" {
   tags ={
     Name = "aws-test-vpc-route-table"
   }
+  depends_on     = [aws_internet_gateway.aws-test-vpc-gw]
 }
 
+#create route table association
 resource "aws_route_table_association" "subnet-association" {
   subnet_id      = "${aws_subnet.aws-subnet-test.id}"
   route_table_id = "${aws_route_table.route-table-aws-test-vpc.id}"
+  depends_on     = [aws_route_table.route-table-aws-test-vpc]
 }
-
-
-#resource "null_resource" "runscript_to_ec2" {
-#  connection {
-#    type        = "ssh"
-#    host        = "${aws_eip.ip-aws-test-vpc.public_ip}"
-#    user        = "ubuntu"
-#    private_key = file("aws-practice-kp.pem")
-#    #private_key = file("~/kluu.pem") aws-practice-kp
-#  }  
-#   provisioner "remote-exec" {
-#    inline = [
-#      "while true; do sleep 10; sudo docker ps -s | ts '[%Y-%m-%d %H:%M:%S]' >> /home/ubuntu/resource.log; done </dev/null &>/dev/null &",
-#      "while true; do sleep 10; sudo docker stats --no-stream | ts '[%Y-%m-%d %H:%M:%S]' >> /home/ubuntu/resource.log; done </dev/null &>/dev/null &",      
-#    ]
-#  }
-# depends_on     = [aws_eip.ip-aws-test-vpc]
-#
-#}

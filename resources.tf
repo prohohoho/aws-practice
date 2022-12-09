@@ -36,6 +36,14 @@ resource "aws_security_group" "aws-sg-test" {
     protocol = "tcp"
     cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
   }
+
+  ingress {        
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
+  }
+
   // Terraform removes the default rule
   egress {
    from_port = 0

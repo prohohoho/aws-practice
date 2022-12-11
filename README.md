@@ -78,3 +78,15 @@ The risk I know based on my limited knowledge is regarding the accesskeys and ke
 Ideally we can use something like azure keyvault to store those senstive credentials. Or if using Azure devops use the variable groups in the pipeline which has the option to encrypt some variables. 
 
 Same goes for the terraform states, it would be good if the backend is on the clound as well where it can be shared with the team more safely, coz if its store locally and my computer gets destroyed. Might cause a problem.
+
+
+
+Bonus Task and Task 8b: 
+Unfortunately, I don't have enough knowledge to implement these 2 sucessfully at the moment, I did some research but not enough time to figure it out completely. 
+
+The lead I had been trying to follow for these 2 task is by using python with readline and displaying the output on HTML Django and/or flask and a reversy proxy setting on nginx. But those involve a couple of topics I haven't used before or in a while. 
+
+So I'll do some self learning on them after busy season when there's free time. 
+
+Getting a python code that does basic search seems simple enough, I have one I saw on one article and tested (file name wordSearch.py), but I haven't gotten to converting it to a Rest API yet.
+
